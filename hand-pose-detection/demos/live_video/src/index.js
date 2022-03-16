@@ -15,44 +15,63 @@
  * =============================================================================
  */
 
-import '@tensorflow/tfjs-backend-webgl';
-import * as mpHands from '@mediapipe/hands';
+import "@tensorflow/tfjs-backend-webgl";
+import * as mpHands from "@mediapipe/hands";
 
-import * as tfjsWasm from '@tensorflow/tfjs-backend-wasm';
+import * as tfjsWasm from "@tensorflow/tfjs-backend-wasm";
 
 tfjsWasm.setWasmPaths(
-    `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${
-        tfjsWasm.version_wasm}/dist/`);
+  `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfjsWasm.version_wasm}/dist/`
+);
 
-import * as handdetection from '@tensorflow-models/hand-pose-detection';
+import * as handdetection from "@tensorflow-models/hand-pose-detection";
 
-import {Camera} from './camera';
-import {setupDatGui} from './option_panel';
-import {STATE} from './shared/params';
-import {setupStats} from './shared/stats_panel';
-import {setBackendAndEnvFlags} from './shared/util';
+import { Camera } from "./camera";
+import { setupDatGui } from "./option_panel";
+import { STATE } from "./shared/params";
+import { setupStats } from "./shared/stats_panel";
+import { setBackendAndEnvFlags } from "./shared/util";
+
+import geckos from "@geckos.io/client";
+
+const channel = geckos({ port: 9208 });
+
+channel.onConnect((error) => {
+  if (error) {
+    console.error(error.message);
+    return;
+  }
+
+  channel.on("chat message", (data) => {
+    console.info(`You got the message ${data}`);
+  });
+
+  channel.emit("chat message", "a short message sent to the server");
+});
 
 let detector, camera, stats;
-let startInferenceTime, numInferences = 0;
-let inferenceTimeSum = 0, lastPanelUpdate = 0;
+let startInferenceTime,
+  numInferences = 0;
+let inferenceTimeSum = 0,
+  lastPanelUpdate = 0;
 let rafId;
 
 async function createDetector() {
   switch (STATE.model) {
     case handdetection.SupportedModels.MediaPipeHands:
-      const runtime = STATE.backend.split('-')[0];
-      if (runtime === 'mediapipe') {
+      const runtime = STATE.backend.split("-")[0];
+      if (runtime === "mediapipe") {
         return handdetection.createDetector(STATE.model, {
           runtime,
           modelType: STATE.modelConfig.type,
           maxHands: STATE.modelConfig.maxNumHands,
-          solutionPath: `https://cdn.jsdelivr.net/npm/@mediapipe/hands@${mpHands.VERSION}`
+          solutionPath: `https://cdn.jsdelivr.net/npm/@mediapipe/hands@${mpHands.VERSION}`,
         });
-      } else if (runtime === 'tfjs') {
+      } else if (runtime === "tfjs") {
         return handdetection.createDetector(STATE.model, {
           runtime,
           modelType: STATE.modelConfig.type,
-          maxHands: STATE.modelConfig.maxNumHands
+          maxHands: STATE.modelConfig.maxNumHands,
         });
       }
   }
@@ -106,9 +125,18 @@ function endEstimateHandsStats() {
     inferenceTimeSum = 0;
     numInferences = 0;
     stats.customFpsPanel.update(
-        1000.0 / averageInferenceTime, 120 /* maxValue */);
+      1000.0 / averageInferenceTime,
+      120 /* maxValue */
+    );
     lastPanelUpdate = endInferenceTime;
   }
+}
+
+function distance(fingerA, fingerB) {
+  const x = fingerA.x - fingerB.x;
+  const y = fingerA.y - fingerB.y;
+
+  return Math.sqrt(x * x + y * y);
 }
 
 async function renderResult() {
@@ -131,9 +159,9 @@ async function renderResult() {
     // Detectors can throw errors, for example when using custom URLs that
     // contain a model that doesn't provide the expected output.
     try {
-      hands = await detector.estimateHands(
-          camera.video,
-          {flipHorizontal: false});
+      hands = await detector.estimateHands(camera.video, {
+        flipHorizontal: false,
+      });
     } catch (error) {
       detector.dispose();
       detector = null;
@@ -149,6 +177,16 @@ async function renderResult() {
   // different model. If during model change, the result is from an old model,
   // which shouldn't be rendered.
   if (hands && hands.length > 0 && !STATE.isModelChanged) {
+    const firstHand = hands[0];
+
+    const thumbTip = firstHand.keypoints[4];
+    const indexTip = firstHand.keypoints[8];
+
+    const dValue = distance(thumbTip, indexTip);
+    console.info(dValue);
+
+    channel.emit("chat message", dValue);
+
     camera.drawResults(hands);
   }
 }
@@ -161,13 +199,13 @@ async function renderPrediction() {
   }
 
   rafId = requestAnimationFrame(renderPrediction);
-};
+}
 
 async function app() {
   // Gui content will change depending on which model is in the query string.
   const urlParams = new URLSearchParams(window.location.search);
-  if (!urlParams.has('model')) {
-    alert('Cannot find model in the query string.');
+  if (!urlParams.has("model")) {
+    alert("Cannot find model in the query string.");
     return;
   }
 
@@ -182,6 +220,6 @@ async function app() {
   detector = await createDetector();
 
   renderPrediction();
-};
+}
 
 app();

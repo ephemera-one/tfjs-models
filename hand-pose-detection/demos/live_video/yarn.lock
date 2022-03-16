@@ -913,6 +913,20 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
+"@geckos.io/client@^2.1.8":
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/@geckos.io/client/-/client-2.1.8.tgz#274676101f2ed6b7b07a55c101eb5c1b2beff56c"
+  integrity sha512-Qcz3G19jpVrMUDYgRXdthYgXPtvDsDV5mg4sFGyuJi1YQZNpzFoCrWkOqeVHyB/ageljBVVqq45WvIgqsrmX2Q==
+  dependencies:
+    "@geckos.io/common" "^2.1.8"
+
+"@geckos.io/common@^2.1.8":
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/@geckos.io/common/-/common-2.1.8.tgz#230c58bf0924c262c22920353c2f4843e29a6eec"
+  integrity sha512-/9f9mVnKG6FS+k8FiTLqsvJX0bxBgqMrdIR4ZnUxT0xuJXP7dtYsfOxF/Y/5pqPRgUIlE5YHLmwrXo3PkrP6nA==
+  dependencies:
+    "@yandeu/events" "0.0.5"
+
 "@iarna/toml@^2.2.0":
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
@@ -1076,6 +1090,11 @@
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@types/webgl2/-/webgl2-0.0.6.tgz#1ea2db791362bd8521548d664dbd3c5311cdf4b6"
   integrity sha512-50GQhDVTq/herLMiqSQkdtRu+d5q/cWHn4VvKJtrj4DJAjo1MNkWYa2MA41BaBO1q1HgsUjuQvEOk0QHvlnAaQ==
+
+"@yandeu/events@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@yandeu/events/-/events-0.0.5.tgz#f8fb41cf4222186eca6a0a5d36f5393805484f19"
+  integrity sha512-TUkghSGu0ThcEyAP50WHU/vdQkpt9EZyotjZzG8KirR+VI5o7Rp5wabcGru62JNy+awMR8Voy+kFzhNkC/1E6A==
 
 abab@^2.0.0:
   version "2.0.5"
