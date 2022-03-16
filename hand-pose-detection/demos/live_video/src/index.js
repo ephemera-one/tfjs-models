@@ -42,11 +42,7 @@ channel.onConnect((error) => {
     return;
   }
 
-  channel.on("chat message", (data) => {
-    console.info(`You got the message ${data}`);
-  });
-
-  channel.emit("chat message", "a short message sent to the server");
+  channel.emit("info", "Controller connected");
 });
 
 let detector, camera, stats;
@@ -185,7 +181,7 @@ async function renderResult() {
     const dValue = distance(thumbTip, indexTip);
     console.info(dValue);
 
-    channel.emit("chat message", dValue);
+    channel.emit("handController", dValue);
 
     camera.drawResults(hands);
   }
