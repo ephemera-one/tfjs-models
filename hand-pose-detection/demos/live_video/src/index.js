@@ -32,18 +32,11 @@ import { STATE } from "./shared/params";
 import { setupStats } from "./shared/stats_panel";
 import { setBackendAndEnvFlags } from "./shared/util";
 
-import geckos from "@geckos.io/client";
+import { io } from "socket.io-client";
 
-const channel = geckos({ port: 9208 });
+const socket = io("ws://localhost:5000");
 
-channel.onConnect((error) => {
-  if (error) {
-    console.error(error.message);
-    return;
-  }
-
-  channel.emit("info", "Controller connected");
-});
+socket.emit("info", "Controller connected");
 
 let detector, camera, stats;
 let startInferenceTime,
@@ -181,7 +174,7 @@ async function renderResult() {
     const dValue = distance(thumbTip, indexTip);
     console.info(dValue);
 
-    channel.emit("handController", dValue);
+    socket.emit("handController", dValue);
 
     camera.drawResults(hands);
   }
