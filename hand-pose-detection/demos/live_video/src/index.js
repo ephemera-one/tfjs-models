@@ -34,9 +34,35 @@ import { setBackendAndEnvFlags } from "./shared/util";
 
 import { io } from "socket.io-client";
 
-const socket = io("wss://socketio.ephemera.one");
+const socket = io(`https://api.satlit.sat.qc.ca/hubsRooms-satlit`, {
+  withCredentials: true,
+  extraHeaders: { "hubs-header": "satmontreal1234" },
+  transports: ["websocket"],
+});
 
-socket.emit("info", "Controller connected");
+socket.on("connect", () => {
+  console.log("connected to https://api.satlit.sat.qc.ca/hubsRooms-satlit");
+});
+
+socket.on("error", (msg) => {
+  console.log("socket error");
+  console.log(msg);
+});
+
+socket.on("connect_error", (msg) => {
+  console.log("socket connection error");
+  console.log(msg);
+});
+
+const msgInfoObj = {
+  hubsID: "oiCKV4G",
+  msgType: "MPInfo",
+  msg: {
+    msgType: "MPInfo",
+    text: "Controller connected",
+  },
+};
+socket.emit("sendToRoom", msgInfoObj);
 
 let detector, camera, stats;
 let startInferenceTime,
@@ -172,9 +198,16 @@ async function renderResult() {
     const indexTip = firstHand.keypoints[8];
 
     const dValue = distance(thumbTip, indexTip);
-    console.info(dValue);
 
-    socket.emit("handController", dValue);
+    const msgObj = {
+      hubsID: "oiCKV4G",
+      msgType: "MPHandControllerData",
+      msg: {
+        msgType: "MPHandControllerData",
+        handData: dValue,
+      },
+    };
+    socket.emit("sendToRoom", msgObj);
 
     camera.drawResults(hands);
   }
