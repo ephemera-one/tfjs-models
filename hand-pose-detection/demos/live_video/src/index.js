@@ -34,7 +34,8 @@ import { setBackendAndEnvFlags } from "./shared/util";
 
 import { io } from "socket.io-client";
 
-const socket = io("wss://socketio.ephemera.one");
+// const socket = io("wss://socketio.ephemera.one");
+const socket = io("ws://localhost:5000");
 
 socket.emit("info", "Controller connected");
 
@@ -171,8 +172,31 @@ async function renderResult() {
     const thumbTip = firstHand.keypoints[4];
     const indexTip = firstHand.keypoints[8];
 
+    const a = firstHand.keypoints[12];
+    const b = firstHand.keypoints[10];
+    // const joint = [[12, 11, 10]];
+
+    // const jointList = [[8, 7, 6]];
+
+    // jointList.forEach((joint) => {
+    //   const a = firstHand.keypoints[joint[0]];
+    //   const b = firstHand.keypoints[joint[1]];
+    //   const c = firstHand.keypoints[joint[2]];
+
+    //   const radians =
+    //     Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
+
+    //   let degrees = Math.abs(radians * (180.0 / Math.PI));
+
+    //   if (degrees > 180.0) degrees = 360 - degrees;
+
+    //   console.log(degrees);
+    // });
+
     const dValue = distance(thumbTip, indexTip);
-    console.info(dValue);
+    const dValue2 = distance(a, b);
+
+    console.log(dValue2);
 
     socket.emit("handController", dValue);
 
