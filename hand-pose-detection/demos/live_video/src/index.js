@@ -200,7 +200,7 @@ async function renderResult() {
     const dValue = distance(thumbTip, indexTip);
 
     const msgObj = {
-      hubsID: "oiCKV4G",
+      hubsID: "ktWzSMr",
       msgType: "MPHandControllerData",
       msg: {
         msgType: "MPHandControllerData",
