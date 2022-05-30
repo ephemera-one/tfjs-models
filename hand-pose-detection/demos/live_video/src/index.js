@@ -34,7 +34,7 @@ import { setBackendAndEnvFlags } from "./shared/util";
 
 import { io } from "socket.io-client";
 
-const socket = io(`https://api.satelitte.sat.qc.ca/hubsRooms-satelitte`, {
+const socket = io("https://api.satellite.sat.qc.ca/hubsRooms-satelitte", {
   withCredentials: true,
   extraHeaders: { "hubs-header": "satmontreal1234" },
   transports: ["websocket"],
@@ -42,7 +42,7 @@ const socket = io(`https://api.satelitte.sat.qc.ca/hubsRooms-satelitte`, {
 
 socket.on("connect", () => {
   console.log(
-    "connected to https://api.satelitte.sat.qc.ca/hubsRooms-satelitte"
+    "connected to https://api.satellite.sat.qc.ca/hubsRooms-satelitte"
   );
 });
 
