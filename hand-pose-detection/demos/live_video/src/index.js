@@ -34,14 +34,16 @@ import { setBackendAndEnvFlags } from "./shared/util";
 
 import { io } from "socket.io-client";
 
-const socket = io(`https://api.satlit.sat.qc.ca/hubsRooms-satlit`, {
+const socket = io(`https://api.satelitte.sat.qc.ca/hubsRooms-satelitte`, {
   withCredentials: true,
   extraHeaders: { "hubs-header": "satmontreal1234" },
   transports: ["websocket"],
 });
 
 socket.on("connect", () => {
-  console.log("connected to https://api.satlit.sat.qc.ca/hubsRooms-satlit");
+  console.log(
+    "connected to https://api.satelitte.sat.qc.ca/hubsRooms-satelitte"
+  );
 });
 
 socket.on("error", (msg) => {
